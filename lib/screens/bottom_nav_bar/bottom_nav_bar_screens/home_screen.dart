@@ -1,5 +1,5 @@
-
 import 'package:elovi_app_ui/common/common_category_widget.dart';
+import 'package:elovi_app_ui/data/product_catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -16,8 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedCategory = 0;
 
-  final TextEditingController searchController =
-  TextEditingController();
+  final TextEditingController searchController = TextEditingController();
 
   final List<String> categories = [
     'Everything',
@@ -28,37 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'Lifestyle',
   ];
 
-  final List<Map<String, dynamic>> products = [
-    {
-      'name': 'Serene Diffuser',
-      'category': 'Botanica Home',
-      'price': '\$65.00',
-      'image':
-      'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600',
-    },
-    {
-      'name': 'Botanica Renewal Serum',
-      'category': 'Botanica Beauty',
-      'price': '\$88.00',
-      'image':
-      'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=600',
-    },
-    {
-      'name': 'Hand-Thrown Ceramic Pot',
-      'category': 'Botanica Home',
-      'price': '\$75.00',
-      'image':
-      'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600',
-    },
-    {
-      'name': 'Bamboo & Bristle Dry Brush',
-      'category': 'Botanica Wellness',
-      'price': '\$35.00',
-      'image':
-      'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600',
-    },
-  ];
-
   @override
   void dispose() {
     searchController.dispose();
@@ -67,8 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final backgroundColor = isDark
         ? AppColors.darkBackground
@@ -95,21 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
         : AppColors.lightBrandAccent;
 
     // SEARCH AND CATEGORY FILTER
-    final filteredProducts = products.where((product) {
+    final filteredProducts = ProductCatalog.products.where((product) {
       final name = product['name'].toString().toLowerCase();
-      final category =
-      product['category'].toString().toLowerCase();
+      final category = product['brand'].toString().toLowerCase();
 
       final search = searchController.text.toLowerCase();
 
-      final matchesSearch =
-          name.contains(search) || category.contains(search);
+      final matchesSearch = name.contains(search) || category.contains(search);
 
-      final selected =
-      categories[selectedCategory].toLowerCase();
+      final selected = categories[selectedCategory].toLowerCase();
 
-      final matchesCategory = selectedCategory == 0 ||
-          category.contains(selected);
+      final matchesCategory =
+          selectedCategory == 0 || category.contains(selected);
 
       return matchesSearch && matchesCategory;
     }).toList();
@@ -121,11 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Icon(
-              Icons.spa,
-              size: 22.sp,
-              color: brandColor,
-            ),
+            Icon(Icons.spa, size: 22.sp, color: brandColor),
             SizedBox(width: 2.w),
             Text(
               'Elovi',
@@ -143,12 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          keyboardDismissBehavior:
-          ScrollViewKeyboardDismissBehavior.onDrag,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               // SEARCH BAR
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 3.w),
@@ -161,11 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.search,
-                        size: 22.sp,
-                        color: primaryText,
-                      ),
+                      Icon(Icons.search, size: 22.sp, color: primaryText),
 
                       SizedBox(width: 2.w),
 
@@ -175,13 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           onChanged: (value) {
                             setState(() {});
                           },
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: primaryText,
-                          ),
+                          style: TextStyle(fontSize: 18.sp, color: primaryText),
                           decoration: InputDecoration(
                             hintText:
-                            'Search over 1000+ plant-based products...',
+                                'Search over 1000+ plant-based products...',
                             hintStyle: TextStyle(
                               fontSize: 17.sp,
                               color: secondaryText,
@@ -204,12 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // HERO BANNER
               Padding(
-                padding: EdgeInsets.fromLTRB(
-                  3.5.w,
-                  2.5.h,
-                  3.5.w,
-                  0,
-                ),
+                padding: EdgeInsets.fromLTRB(3.5.w, 2.5.h, 3.5.w, 0),
                 child: Container(
                   height: 18.h,
                   width: double.infinity,
@@ -219,10 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFF1B382D),
-                        Color(0xFF456D5B),
-                      ],
+                      colors: [Color(0xFF1B382D), Color(0xFF456D5B)],
                     ),
                   ),
                   child: Stack(
@@ -233,17 +176,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Icon(
                           Icons.eco,
                           size: 48.w,
-                          color: Colors.white.withOpacity(0.13),
+                          color: Colors.white.withValues(alpha: 0.13),
                         ),
                       ),
 
                       Padding(
                         padding: EdgeInsets.all(3.w),
                         child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          mainAxisAlignment:
-                          MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'Pure. Potent. Plant-Based.',
@@ -276,8 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: accentColor,
-                                borderRadius:
-                                BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(25),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -286,8 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     'Explore',
                                     style: TextStyle(
                                       fontSize: 15.sp,
-                                      color:
-                                      AppColors.lightTextPrimary,
+                                      color: AppColors.lightTextPrimary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -297,8 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Icon(
                                     Icons.north_east,
                                     size: 16.sp,
-                                    color:
-                                    AppColors.lightTextPrimary,
+                                    color: AppColors.lightTextPrimary,
                                   ),
                                 ],
                               ),
@@ -317,9 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 5.5.h,
                 child: ListView.separated(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3.5.w,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 3.5.w),
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   separatorBuilder: (context, index) {
@@ -344,34 +280,43 @@ class _HomeScreenState extends State<HomeScreen> {
               // PRODUCT GRID
               if (filteredProducts.isNotEmpty)
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3.5.w,
-                  ),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics:
-                    const NeverScrollableScrollPhysics(),
-                    itemCount: filteredProducts.length,
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 2.5.w,
-                      mainAxisSpacing: 1.5.h,
-                      mainAxisExtent: 34.h,
-                    ),
-                    itemBuilder: (context, index) {
-                      final product = filteredProducts[index];
+                  padding: EdgeInsets.symmetric(horizontal: 3.5.w),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+                      final columns = width >= 1000
+                          ? 4
+                          : width >= 650
+                          ? 3
+                          : 2;
+                      final cardExtent = width >= 650
+                          ? 340.0
+                          : (34.h).clamp(280.0, 390.0);
 
-                      return ProductCardWidget(
-                        name: product['name'],
-                        category: product['category'],
-                        price: product['price'],
-                        image: product['image'],
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: filteredProducts.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: columns,
+                          crossAxisSpacing: 2.5.w,
+                          mainAxisSpacing: 1.5.h,
+                          mainAxisExtent: cardExtent,
+                        ),
+                        itemBuilder: (context, index) {
+                          final product = filteredProducts[index];
+                          return ProductCardWidget(
+                            name: product['name'],
+                            category: product['brand'],
+                            price:
+                                '\$${(product['price'] as num).toStringAsFixed(2)}',
+                            image: product['image'],
+                          );
+                        },
                       );
                     },
                   ),
                 )
-
               // NO PRODUCTS
               else
                 Padding(
@@ -379,16 +324,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                     child: Text(
                       'No products found',
-                      style: TextStyle(
-                        color: secondaryText,
-                        fontSize: 12.sp,
-                      ),
+                      style: TextStyle(color: secondaryText, fontSize: 12.sp),
                     ),
                   ),
                 ),
 
               // BOTTOM SPACE
-              SizedBox(height: 12.h),
+              // SizedBox(height: 5.h),
             ],
           ),
         ),

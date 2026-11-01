@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../color/app_colors.dart';
+import '../../data/product_catalog.dart';
 
 class WishlistProductCardWidget extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -35,11 +36,14 @@ class _WishlistProductCardWidgetState extends State<WishlistProductCardWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenSize = MediaQuery.sizeOf(context);
+    final imageWidth = (screenSize.width * 0.32).clamp(100.0, 190.0);
+    final imageHeight = (screenSize.height * 0.2).clamp(150.0, 220.0);
 
     // Brand Colors
-    final brandColor = isDark
-        ? AppColors.darkBrandAccent
-        : AppColors.lightBrandSolid;
+    // final brandColor = isDark
+    //     ? AppColors.darkBrandAccent
+    //     : AppColors.lightBrandSolid;
 
     // Favorite Icon Colors
     final favoriteColor = isDark
@@ -61,7 +65,9 @@ class _WishlistProductCardWidgetState extends State<WishlistProductCardWidget> {
         ? AppColors.darkBrandAccent
         : AppColors.lightBrandSolid;
 
-    final isFavorite = widget.product['isFavorite'] as bool;
+    final isFavorite = ProductCatalog.isFavorite(
+      widget.product['name'] as String,
+    );
 
     return Container(
       margin: EdgeInsets.only(bottom: 1.5.h),
@@ -72,7 +78,7 @@ class _WishlistProductCardWidgetState extends State<WishlistProductCardWidget> {
         border: Border.all(color: widget.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -88,13 +94,13 @@ class _WishlistProductCardWidgetState extends State<WishlistProductCardWidget> {
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
                   widget.product['image'],
-                  height: 15.h,
-                  width: 35.w,
+                  height: imageHeight,
+                  width: imageWidth,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      height: 15.h,
-                      width: 35.w,
+                      height: imageHeight,
+                      width: imageWidth,
                       color: widget.surface2Color,
                       child: Icon(
                         Icons.image_not_supported_outlined,
@@ -202,23 +208,35 @@ class _WishlistProductCardWidgetState extends State<WishlistProductCardWidget> {
                 // Price
                 Row(
                   children: [
-                    Text(
-                      '\$${(widget.product['price'] as num).toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        fontWeight: FontWeight.bold,
-                        color: widget.primaryText,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '\$${(widget.product['price'] as num).toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            fontWeight: FontWeight.bold,
+                            color: widget.primaryText,
+                          ),
+                        ),
                       ),
                     ),
 
                     SizedBox(width: 2.w),
 
-                    Text(
-                      '\$${(widget.product['oldPrice'] as num).toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        decoration: TextDecoration.lineThrough,
-                        color: widget.secondaryText,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '\$${(widget.product['oldPrice'] as num).toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 17.sp,
+                            decoration: TextDecoration.lineThrough,
+                            color: widget.secondaryText,
+                          ),
+                        ),
                       ),
                     ),
                   ],

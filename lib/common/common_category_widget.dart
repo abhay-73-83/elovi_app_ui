@@ -17,8 +17,7 @@ class CommonCategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final brandColor = isDark
         ? AppColors.darkBrandSolid
@@ -36,22 +35,18 @@ class CommonCategoryWidget extends StatelessWidget {
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
 
-    final borderColor = isDark
-        ? AppColors.darkBorder
-        : AppColors.lightBorder;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 20.w,
-        height: 5.2.h,
+        constraints: BoxConstraints(minHeight: 5.2.h),
+        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? brandColor : surfaceColor,
           borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: isSelected ? brandColor : borderColor,
-          ),
+          border: Border.all(color: isSelected ? brandColor : borderColor),
         ),
         child: Text(
           title,
@@ -59,9 +54,7 @@ class CommonCategoryWidget extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 15.sp,
-            fontWeight: isSelected
-                ? FontWeight.bold
-                : FontWeight.w500,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             color: isSelected ? accentColor : textColor,
           ),
         ),

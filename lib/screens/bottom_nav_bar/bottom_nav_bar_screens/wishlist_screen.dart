@@ -1,4 +1,5 @@
 import 'package:elovi_app_ui/common/common_category_widget.dart';
+import 'package:elovi_app_ui/data/product_catalog.dart';
 import 'package:elovi_app_ui/widgets/wishlist_widgets/wishlist_product_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -23,56 +24,21 @@ class _WishlistScreenState extends State<WishlistScreen> {
     'Tools',
   ];
 
-  final List<Map<String, dynamic>> products = [
-    {
-      'name': 'Serene Diffuser',
-      'brand': 'Botanica Home',
-      'category': 'Home',
-      'price': 65.00,
-      'oldPrice': 85.00,
-      'discount': '23% OFF',
-      'rating': '4.6 (112)',
-      'image':
-          'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600',
-      'isFavorite': true,
-    },
-    {
-      'name': 'Botanica Renewal Serum',
-      'brand': 'Botanica Beauty',
-      'category': 'Beauty',
-      'price': 88.00,
-      'oldPrice': 110.00,
-      'discount': '20% OFF',
-      'rating': '4.6 (76)',
-      'image':
-          'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?w=600',
-      'isFavorite': true,
-    },
-    {
-      'name': 'Hand-Thrown Ceramic Pot',
-      'brand': 'Botanica Home',
-      'category': 'Home',
-      'price': 75.00,
-      'oldPrice': 95.00,
-      'discount': '21% OFF',
-      'rating': '4.5 (54)',
-      'image':
-          'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600',
-      'isFavorite': true,
-    },
-    {
-      'name': 'Bamboo & Bristle Dry Brush',
-      'brand': 'Botanica Wellness',
-      'category': 'Wellness',
-      'price': 35.00,
-      'oldPrice': 45.00,
-      'discount': '22% OFF',
-      'rating': '4.7 (92)',
-      'image':
-          'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600',
-      'isFavorite': true,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    ProductCatalog.favoriteNames.addListener(_onFavoritesChanged);
+  }
+
+  @override
+  void dispose() {
+    ProductCatalog.favoriteNames.removeListener(_onFavoritesChanged);
+    super.dispose();
+  }
+
+  void _onFavoritesChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +71,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     // Filter products by selected category
-    final filteredProducts = products.where((product) {
+    final filteredProducts = ProductCatalog.products.where((product) {
+      if (!ProductCatalog.isFavorite(product['name'] as String)) return false;
       if (selectedCategory == 0) {
         return true;
       }
@@ -113,17 +80,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
       return product['category'] == categories[selectedCategory];
     }).toList();
 
-    // Count favorite products
-    final savedItems = products
-        .where((product) => product['isFavorite'] == true)
-        .length;
-
     // Count favorite categories
-    final savedCategories = products
-        .where((product) => product['isFavorite'] == true)
-        .map((product) => product['category'])
-        .toSet()
-        .length;
+    // final savedCategories = products
+    //     .where((product) => product['isFavorite'] == true)
+    //     .map((product) => product['category'])
+    //     .toSet()
+    //     .length;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -131,7 +93,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
         title: Row(
           children: [
             Icon(Icons.spa, size: 22.sp, color: brandColor),
-            SizedBox(width: 2.w,),
+            SizedBox(width: 2.w),
             Text(
               'Elovi Wishlist',
               style: TextStyle(
@@ -367,9 +329,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
 
                       // Favorite Toggle
                       onFavoriteTap: () {
-                        setState(() {
-                          product['isFavorite'] = !product['isFavorite'];
-                        });
+                        ProductCatalog.toggleFavorite(
+                          product['name'] as String,
+                        );
                       },
 
                       // Add to Bag
@@ -387,90 +349,90 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 SizedBox(height: 1.h),
 
                 // Bottom Banner
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3.w,
-                    vertical: 1.5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDDF5A8),
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: const Color(0xFFCDEB8C)),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 5.h,
-                        width: 5.h,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFC7E98A),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.spa, color: Color(0xFF213B30)),
-                      ),
-
-                      SizedBox(width: 3.w),
-
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Still thinking?',
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: const Color(0xFF213B30),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 0.4.h),
-                            Text(
-                              'You have $savedItems items in your wishlist.',
-                              style: TextStyle(
-                                fontSize: 9.5.sp,
-                                color: const Color(0xFF213B30),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      GestureDetector(
-                        onTap: () {
-                          // Discover screen navigation later
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 3.w,
-                            vertical: 1.3.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF9FC65B),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Explore more',
-                                style: TextStyle(
-                                  fontSize: 9.5.sp,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(width: 1.w),
-                              const Icon(
-                                Icons.arrow_forward,
-                                size: 14,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 2.h),
+                // Container(
+                //   padding: EdgeInsets.symmetric(
+                //     horizontal: 3.w,
+                //     vertical: 1.5.h,
+                //   ),
+                //   decoration: BoxDecoration(
+                //     color: const Color(0xFFDDF5A8),
+                //     borderRadius: BorderRadius.circular(25),
+                //     border: Border.all(color: const Color(0xFFCDEB8C)),
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       Container(
+                //         height: 5.h,
+                //         width: 5.h,
+                //         decoration: const BoxDecoration(
+                //           color: Color(0xFFC7E98A),
+                //           shape: BoxShape.circle,
+                //         ),
+                //         child: const Icon(Icons.spa, color: Color(0xFF213B30)),
+                //       ),
+                //
+                //       SizedBox(width: 3.w),
+                //
+                //       Expanded(
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Text(
+                //               'Still thinking?',
+                //               style: TextStyle(
+                //                 fontSize: 12.sp,
+                //                 color: const Color(0xFF213B30),
+                //                 fontWeight: FontWeight.w500,
+                //               ),
+                //             ),
+                //             SizedBox(height: 0.4.h),
+                //             Text(
+                //               'You have $savedItems items in your wishlist.',
+                //               style: TextStyle(
+                //                 fontSize: 9.5.sp,
+                //                 color: const Color(0xFF213B30),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //
+                //       GestureDetector(
+                //         onTap: () {
+                //           // Discover screen navigation later
+                //         },
+                //         child: Container(
+                //           padding: EdgeInsets.symmetric(
+                //             horizontal: 3.w,
+                //             vertical: 1.3.h,
+                //           ),
+                //           decoration: BoxDecoration(
+                //             color: const Color(0xFF9FC65B),
+                //             borderRadius: BorderRadius.circular(25),
+                //           ),
+                //           child: Row(
+                //             children: [
+                //               Text(
+                //                 'Explore more',
+                //                 style: TextStyle(
+                //                   fontSize: 9.5.sp,
+                //                   color: Colors.white,
+                //                 ),
+                //               ),
+                //               SizedBox(width: 1.w),
+                //               const Icon(
+                //                 Icons.arrow_forward,
+                //                 size: 14,
+                //                 color: Colors.white,
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(height: 2.h),
               ],
             ),
           ),

@@ -12,8 +12,6 @@ class CommonAddToCartButton extends StatelessWidget {
     this.title = 'Add to Cart',
   });
 
-
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -29,10 +27,7 @@ class CommonAddToCartButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 2.5.w,
-          vertical: 1.h,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
         decoration: BoxDecoration(
           color: brandAccentColor,
           borderRadius: BorderRadius.circular(25),
@@ -42,14 +37,14 @@ class CommonAddToCartButton extends StatelessWidget {
           children: [
             Icon(
               Icons.shopping_bag_outlined,
-              size: 0.3.dp,
+              size: 16.sp,
               color: brandSolidColor,
             ),
             SizedBox(width: 1.w),
             Text(
               title,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 13.sp,
                 color: brandSolidColor,
                 fontWeight: FontWeight.bold,
               ),

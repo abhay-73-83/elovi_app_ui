@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../data/product_catalog.dart';
 import '../../color/app_colors.dart';
 import '../../common/common_add_to_cart.dart';
 
@@ -24,16 +24,11 @@ class ProductCardWidget extends StatefulWidget {
 }
 
 class _ProductCardWidgetState extends State<ProductCardWidget> {
-  bool isFavorite = false;
-
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final cardColor = isDark
-        ? AppColors.darkSurface
-        : AppColors.lightSurface;
+    final cardColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
 
     final primaryText = isDark
         ? AppColors.darkTextPrimary
@@ -43,9 +38,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
 
-    final borderColor = isDark
-        ? AppColors.darkBorder
-        : AppColors.lightBorder;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     final brandColor = isDark
         ? AppColors.darkBrandSolid
@@ -56,10 +49,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(17),
-        border: Border.all(
-          color: borderColor,
-          width: 1,
-        ),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,11 +66,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                       widget.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      loadingBuilder: (
-                          context,
-                          child,
-                          loadingProgress,
-                          ) {
+                      loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
                           return child;
                         }
@@ -93,11 +79,7 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                           child: const CircularProgressIndicator(),
                         );
                       },
-                      errorBuilder: (
-                          context,
-                          error,
-                          stackTrace,
-                          ) {
+                      errorBuilder: (context, error, stackTrace) {
                         return Container(
                           color: isDark
                               ? AppColors.darkSurface2
@@ -139,24 +121,21 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                 //   ),
 
                 // FAVORITE
-
                 Positioned(
                   top: 0.7.h,
                   right: 1.w,
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isFavorite = !isFavorite;
-                      });
-                    },
-                    child: Icon(
-                      isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      size: 20.sp,
-                      color: isFavorite
-                          ? brandColor
-                          : brandColor,
+                    onTap: () => ProductCatalog.toggleFavorite(widget.name),
+                    child: ValueListenableBuilder<Set<String>>(
+                      valueListenable: ProductCatalog.favoriteNames,
+                      builder: (context, favorites, child) {
+                        final isFavorite = favorites.contains(widget.name);
+                        return Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 20.sp,
+                          color: brandColor,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -167,7 +146,6 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
           SizedBox(height: 0.7.h),
 
           // PRODUCT NAME
-
           Text(
             widget.name,
             maxLines: 1,
@@ -183,21 +161,16 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
           SizedBox(height: 0.3.h),
 
           // PRODUCT CATEGORY
-
           Text(
             widget.category,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 13.5.sp,
-              color: secondaryText,
-            ),
+            style: TextStyle(fontSize: 13.5.sp, color: secondaryText),
           ),
 
           // SizedBox(height: 0.7.h),
 
           // PRICE AND ADD BUTTON
-
           Row(
             children: [
               Expanded(
@@ -213,8 +186,9 @@ class _ProductCardWidgetState extends State<ProductCardWidget> {
                   ),
                 ),
               ),
-
-              CommonAddToCartButton(onTap: (){}),
+              // const Spacer(),
+              // SizedBox(width: 10.w,),
+              CommonAddToCartButton(onTap: () {}, title: 'Add'),
             ],
           ),
         ],
